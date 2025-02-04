@@ -3,6 +3,7 @@ const requestRouter = express.Router() ;
 const Connection = require('../models/Connection') ;  
 const userAuth = require("../middlewares/userAuth") ; 
 const User = require("../models/User") ; 
+const sendEmail = require("../utils/sendEmail") ; 
 requestRouter.post('/request/:status/:toUserId' , userAuth , async (req , res) => {
     try{
         const loggedInUser = req.user ; 
@@ -21,18 +22,20 @@ requestRouter.post('/request/:status/:toUserId' , userAuth , async (req , res) =
                 { toUserId: fromUserId , fromUserId: toUserId  }
             ]
         }) ; 
-        console.log(connectionRequestAlreadyExists) ; 
+        // console.log(connectionRequestAlreadyExists) ; 
         if(connectionRequestAlreadyExists.length) {throw new Error("Connection Request already exists") }
         const connectionRequest = await Connection({
             fromUserId: loggedInUser._id ,  toUserId , status
         }) ; 
         await connectionRequest.save() ; 
+        const emailRes = await sendEmail.run() ; 
+        // console.log(emailRes) ; 
         return res.status(200).json({
             message: `${status} successfully!!` , 
             from: `${loggedInUser.firstName} ${loggedInUser.lastName}` , 
             to: `${user.firstName} ${user.lastName}`, 
         }) ; 
-        console.log(user); 
+        // console.log(user); 
     } catch(Error){
         res.status(400).send("Error: " + Error.message) ; 
     }

@@ -32,7 +32,7 @@ authRouter.post('/login' , async (req , res) => {
         if(!loginCredentials){
             return res.status(400).send("Invalid Credentials") ; 
         }
-        const token = jwt.sign({_id : user._id} , "DEV@Tinder123" , {
+        const token = jwt.sign({_id : user._id} ,process.env.JWT_SECRET , {
             expiresIn: "1d" , 
         } ) ; 
         res.cookie("token" , token) ; 

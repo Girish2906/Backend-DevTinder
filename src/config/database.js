@@ -1,7 +1,9 @@
 const mongoose = require('mongoose') ; 
-const url = "mongodb+srv://girishbhargava:BquG0D857Y1Eg80K@backenddecoded.2un9g.mongodb.net/" ; 
+// const url = process.env.DB_CONNECTION_SECRET ; 
 
 const connectDB = async () => {
+    const url = process.env.DB_CONNECTION_SECRET ; 
+
     await mongoose.connect(url) ; 
 }
 
